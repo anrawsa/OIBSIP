@@ -1,0 +1,240 @@
+import java.util.*;
+
+public class DigitalLibraryManagement {
+    private HashMap<String, Integer> loginto = new HashMap<>();
+    private HashMap<Integer, String> map = new HashMap<>();
+    private static String userID;
+    private static int issues = 0;
+    private Scanner sc = new Scanner(System.in);
+
+    public DigitalLibraryManagement() {
+        initializeDatabase();
+    }
+
+    private void initializeDatabase() {
+        map.put(1,"EE : Electric Machine-1");
+        map.put(2,"EE : Electric Machine-2");
+        map.put(3,"EE : Electric Drive");
+        map.put(4,"EE : Power System-1");
+        map.put(5,"EE : Power System-2");
+        map.put(6,"EE : Basic Electrical");
+        map.put(7,"EE : Power Electronics");
+        map.put(8,"ECE : Basic Electronics");
+        map.put(9,"ECE : Microprocessor & Microcontroller");
+        map.put(10,"ECE : Analog Electronics");
+        map.put(11,"ECE : Digital Electronics");
+        map.put(12,"CSE : C Programming");
+        map.put(13,"CSE : Java Programming");
+        map.put(14,"CSE : Artificial Intelligence");
+        map.put(15,"CSE : Object Oriented Programming (OOPs)");
+        map.put(16,"IT : Data Structures & Algorithms");
+        map.put(17,"IT : Databases - Networks");
+        map.put(18,"IT : Statistics");
+        map.put(19,"BBA : Principle of Management");
+        map.put(20,"BBA : Economics for Engineers");
+        map.put(21,"MATHS : Engineering Mathematics-1");
+        map.put(22,"MATHS : Engineering Mathematics-2");
+        map.put(23,"MATHS : Engineering Mathematics-3");
+        map.put(24,"PHYS : Physics");
+        map.put(25,"CHEM : Chemistry");
+        map.put(26,"ENG : English");
+        map.put(27,"BENG : Bengali");
+        map.put(28,"HIND : Hindi");
+        map.put(29,"EE : Control System");
+        map.put(30,"EE : Electrical Circuit Theory");
+        map.put(31,"EE : Electric & Hybrid Vehicle");
+        map.put(32,"EE : Renewable Energy Sources");
+    }
+
+    public void homepage() {
+        while (true) {
+            System.out.println("\n--------------------------------------------------------");
+            System.out.println("----- WELCOME TO DIGITAL LIBRARY MANAGEMENT SYSTEM -----");
+            System.out.println("----------------------- HOMEPAGE -----------------------");
+            System.out.println("--------------------------------------------------------");
+            System.out.println("1. Admin Login");
+            System.out.println("2. User Login");
+            System.out.println("3. Exit");
+            System.out.print("Select Option: ");
+
+            int choice = sc.nextInt();
+            switch (choice) {
+                case 1 -> adminLogin();
+                case 2 -> userLogin();
+                case 3 -> {
+                    System.out.print("Do you want to Exit? (Y/N): ");
+                    String exit = sc.next();
+                    if (exit.equalsIgnoreCase("Y")) {
+                        System.out.println("\nExiting... Thank You!");
+                        return;
+                    }
+                }
+                default -> System.out.println("Invalid Option. Try again.");
+            }
+        }
+    }
+
+    private void adminLogin() {
+        loginto.put("Soumya", 13579);
+        loginto.put("Soumyadip", 20026);
+
+        System.out.print("Enter User-ID: ");
+        userID = sc.next();
+        System.out.print("Enter Password: ");
+        int pass = sc.nextInt();
+
+        if (loginto.containsKey(userID) && loginto.get(userID).equals(pass)) {
+            System.out.println("\nLogin successful!");
+            adminMainPage();
+        } else {
+            System.out.println("\nInvalid login. Try again.");
+        }
+    }
+
+    private void userLogin() {
+        loginto.put("Soumya", 13579);
+        loginto.put("Soumyadip", 20026);
+        loginto.put("Soumy", 12345);
+        loginto.put("SPal", 24680);
+        loginto.put("Dip", 11111);
+
+        System.out.print("Enter User-ID: ");
+        userID = sc.next();
+        System.out.print("Enter Password: ");
+        int pass = sc.nextInt();
+
+        if (loginto.containsKey(userID) && loginto.get(userID).equals(pass)) {
+            System.out.println("\nLogin successful!");
+            userMainPage();
+        } else {
+            System.out.println("\nInvalid login. Try again.");
+        }
+    }
+
+    private void adminMainPage() {
+        while (true) {
+            System.out.println("\n---------------- ADMIN MAINPAGE ----------------");
+            System.out.println("1. Add New Book");
+            System.out.println("2. Update Existing Book");
+            System.out.println("3. Delete Book");
+            System.out.println("4. Go To User MainPage");
+            System.out.println("5. Logout to Homepage");
+            System.out.print("Select Option: ");
+            int option = sc.nextInt();
+
+            switch (option) {
+                case 1 -> addBook();
+                case 2 -> updateBook();
+                case 3 -> deleteBook();
+                case 4 -> userMainPage();
+                case 5 -> {
+                    System.out.println("Logging out to Homepage...");
+                    return;
+                }
+                default -> System.out.println("Invalid option. Try again.");
+            }
+        }
+    }
+
+    private void userMainPage() {
+        while (true) {
+            System.out.println("\n---------------- USER MAINPAGE ----------------");
+            System.out.println("1. View Books");
+            System.out.println("2. Issue Book");
+            System.out.println("3. Return Book");
+            System.out.println("4. Logout to Homepage");
+            System.out.print("Select Option: ");
+            int option = sc.nextInt();
+
+            switch (option) {
+                case 1 -> viewBooks();
+                case 2 -> issueBook();
+                case 3 -> returnBook();
+                case 4 -> {
+                    System.out.println("Logging out to Homepage...");
+                    return;
+                }
+                default -> System.out.println("Invalid option. Try again.");
+            }
+        }
+    }
+
+    private void addBook() {
+        System.out.print("Enter new book number: ");
+        int num = sc.nextInt();
+        sc.nextLine();
+        if (map.containsKey(num)) {
+            System.out.println("Book number already exists.");
+        } else {
+            System.out.print("Enter book details: ");
+            String details = sc.nextLine();
+            map.put(num, details);
+            System.out.println("Book added successfully.");
+        }
+    }
+
+    private void updateBook() {
+        System.out.print("Enter book number to update: ");
+        int num = sc.nextInt();
+        sc.nextLine();
+        if (map.containsKey(num)) {
+            System.out.print("Enter new details: ");
+            String details = sc.nextLine();
+            map.put(num, details);
+            System.out.println("Book updated successfully.");
+        } else {
+            System.out.println("Book not found.");
+        }
+    }
+
+    private void deleteBook() {
+        System.out.print("Enter book number to delete: ");
+        int num = sc.nextInt();
+        if (map.containsKey(num)) {
+            System.out.print("Are you sure? (Y/N): ");
+            String confirm = sc.next();
+            if (confirm.equalsIgnoreCase("Y")) {
+                map.remove(num);
+                System.out.println("Book deleted.");
+            } else {
+                System.out.println("Deletion cancelled.");
+            }
+        } else {
+            System.out.println("Book not found.");
+        }
+    }
+
+    private void viewBooks() {
+        System.out.println("\nAll Available Books:");
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " ---> " + entry.getValue());
+        }
+    }
+
+    private void issueBook() {
+        System.out.print("Enter book number to issue: ");
+        int num = sc.nextInt();
+        if (issues == 0 && map.containsKey(num)) {
+            issues = num;
+            System.out.println("Book issued: " + map.get(num));
+        } else if (issues != 0) {
+            System.out.println("You already issued a book. Return it first.");
+        } else {
+            System.out.println("Invalid book number.");
+        }
+    }
+
+    private void returnBook() {
+        if (issues != 0 && map.containsKey(issues)) {
+            System.out.println("Returned Book: " + map.get(issues));
+            issues = 0;
+        } else {
+            System.out.println("No book to return.");
+        }
+    }
+
+    public static void main(String[] args) {
+        DigitalLibraryManagement dlm = new DigitalLibraryManagement();
+        dlm.homepage();
+    }
+}
