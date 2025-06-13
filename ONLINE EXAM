@@ -1,202 +1,199 @@
-import java.util.*;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Exam System</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .exam-container {
+      max-width: 850px;
+      margin: 30px auto;
+      background: #ffffffdd;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      padding: 25px;
+    }
+    h1 {
+      text-align: center;
+      color: #6a0dad;
+    }
+    .question {
+      margin-bottom: 20px;
+      background: #f0f8ff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+    .question h3 {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 6px;
+    }
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+    button {
+      background: #6a0dad;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-block;
+      margin: 10px 10px;
+    }
+    #result {
+      font-size: 20px;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #timer {
+      font-size: 18px;
+      text-align: right;
+      color: #d32f2f;
+      margin-bottom: 10px;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    #actions { text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="exam-container">
+    <h1>📝 Online Exam Portal</h1>
+    <div id="timer">Time Left: <span id="time">03:00</span></div>
+    <form id="examForm">
+      <div class="question">
+        <h3>1. Capital of France?</h3>
+        <label><input type="radio" name="q1" value="a">Berlin</label>
+        <label><input type="radio" name="q1" value="b">Madrid</label>
+        <label><input type="radio" name="q1" value="c">Paris</label>
+        <label><input type="radio" name="q1" value="d">Rome</label>
+      </div>
+      <div class="question">
+        <h3>2. Language used for web structure?</h3>
+        <label><input type="radio" name="q2" value="a">Python</label>
+        <label><input type="radio" name="q2" value="b">HTML</label>
+        <label><input type="radio" name="q2" value="c">C++</label>
+        <label><input type="radio" name="q2" value="d">Java</label>
+      </div>
+      <div class="question">
+        <h3>3. Who wrote Harry Potter?</h3>
+        <label><input type="radio" name="q3" value="a">J.K. Rowling</label>
+        <label><input type="radio" name="q3" value="b">Shakespeare</label>
+        <label><input type="radio" name="q3" value="c">Tolstoy</label>
+        <label><input type="radio" name="q3" value="d">Homer</label>
+      </div>
+      <div class="question">
+        <h3>4. What is 9 × 9?</h3>
+        <label><input type="radio" name="q4" value="a">81</label>
+        <label><input type="radio" name="q4" value="b">72</label>
+        <label><input type="radio" name="q4" value="c">99</label>
+        <label><input type="radio" name="q4" value="d">90</label>
+      </div>
+      <div class="question">
+        <h3>5. Red planet is?</h3>
+        <label><input type="radio" name="q5" value="a">Earth</label>
+        <label><input type="radio" name="q5" value="b">Mars</label>
+        <label><input type="radio" name="q5" value="c">Venus</label>
+        <label><input type="radio" name="q5" value="d">Jupiter</label>
+      </div>
+      <div class="question">
+        <h3>6. What is CPU?</h3>
+        <label><input type="radio" name="q6" value="a">Central Power Unit</label>
+        <label><input type="radio" name="q6" value="b">Central Processing Unit</label>
+        <label><input type="radio" name="q6" value="c">Computer Primary Unit</label>
+        <label><input type="radio" name="q6" value="d">Control Panel Unit</label>
+      </div>
 
-class OnlineExam{
-    HashMap<String,Integer> loginto=new HashMap<>();
-    public static String userID;
-    Scanner sc=new Scanner(System.in);
-    
-    public void login()
-    {
-    	System.out.println("---------------- WELCOME TO ONLINE EXAM SYSTEM ----------------");
-        System.out.print("Enter User-Id: ");
-        userID = sc.next();
-        System.out.print("Enter Password: ");
-        int password = sc.nextInt();
-        loginto.put("Soumya",13579);
-        loginto.put("Soumyadip",20026);
-        loginto.put("Soumy",12345);
-        
-        if (loginto.containsKey(userID) && loginto.get(userID) == password)
-        {
-            System.out.println("\n" + "LOGIN SUCCESSFULLY...!");
-            homepage();
-        }
-        else{
-            System.out.println("\n" + "Invalid login credentials.!!! Please try again...");
-            login();
-        }
+      <div id="actions">
+        <button type="button" onclick="submitExam()">Submit</button>
+        <button type="button" onclick="reviewAnswers()">Review Answers</button>
+        <button type="button" onclick="generatePDF()">Download Report</button>
+      </div>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const answers = {
+      q1: "c", q2: "b", q3: "a", q4: "a", q5: "b", q6: "b"
+    };
+    let timerMinutes = 3, timerSeconds = 0;
+    let timerInterval = setInterval(updateTimer, 1000);
+
+    function updateTimer() {
+      const display = document.getElementById("time");
+      if (timerMinutes === 0 && timerSeconds === 0) {
+        clearInterval(timerInterval);
+        submitExam(true);
+        return;
+      }
+      if (timerSeconds === 0) {
+        timerMinutes--; timerSeconds = 59;
+      } else timerSeconds--;
+      display.textContent = `${String(timerMinutes).padStart(2, "0")}:${String(timerSeconds).padStart(2, "0")}`;
     }
-    
-    public void homepage()
-    {
-        System.out.println("-----------------------------------------------------");
-        System.out.println("Online Examination System ---> Welcome " + OnlineExam.userID + "!");
-        System.out.println("-----------------------------------------------------");
-        System.out.println("Select 1 to Update password...");
-        System.out.println("Select 2 to Start the test...");
-        System.out.println("Select 3 to Logout...");
-        System.out.println("-----------------------------------------------------");
-        System.out.print("Select Option: ");
-        int sp=sc.nextInt();
-        switch(sp){
-            case 1: 
-            	loginto = update();
-            	homepage();
-            	break;
-            case 2: 
-            	solve();
-            	homepage();
-            	break;
-            case 3: 
-                System.out.println("\n" + "Logout Successfully...!");
-                System.out.println("Thank You for Attending the Test...");
-                System.out.println("-----------------------------------------------------");
-            	System.exit(0);
-            	break;
-            default: 
-            	System.out.println("\n" + "Invalid Option Choice.! Try again...");
-            	homepage();
-            	break;
-        }
+
+    function submitExam(auto = false) {
+      clearInterval(timerInterval);
+      let score = 0, total = Object.keys(answers).length;
+      for (let key in answers) {
+        let selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (selected?.value === answers[key]) score++;
+      }
+      localStorage.setItem("lastScore", score);
+      document.getElementById("result").innerHTML = auto ?
+        `⏰ Time's up! You scored ${score}/${total}` :
+        `🎯 You scored ${score}/${total}. ${score === total ? "Perfect!" : score >= 4 ? "Good Job!" : "Keep trying!"}`;
     }
-    
-    public HashMap<String,Integer> update()
-    {
-        Scanner sc=new Scanner(System.in);
-        System.out.println("\n------------------ UPDATE PASSWORD ------------------");
-        System.out.print("Enter Username: ");
-        String uid = sc.nextLine();
-        System.out.print("Enter Old Password: ");
-        int pass = sc.nextInt();
-        if(loginto.containsKey(uid))
-        {
-            if(pass == loginto.get(uid))
-            {
-                System.out.println("Old Password Verified...");
-                while(true)
-                {
-                    System.out.print("\n" + "Enter New Password: ");
-                    int newpass = sc.nextInt();
-                    System.out.print("ReEnter/Verify New Password: ");
-                    int connewpass = sc.nextInt();
-                    if(connewpass == newpass)
-                    {
-                        System.out.println("Password matched...");
-                        loginto.replace(uid,newpass);
-                        System.out.println("\n" + "Password Update Successfully...!");
-                        break;
-                    }
-                    else{
-                        System.out.println("\n" + "Password did't match.!!! Please try again...");
-                        System.out.println("-----------------------------------------------------");
-                    }
-                }
-            }
-            else{
-                System.out.println("\n" + "Wrong Password.!!! Try again later...");
-                update();
-            }
-        }
-        else
-        {
-            System.out.println("\n" + "User does not exist...");
-            System.out.println("Profile Update Failed.!");
-        }
-        return loginto;
+
+    function reviewAnswers() {
+      for (let key in answers) {
+        let labels = document.querySelectorAll(`input[name="${key}"]`);
+        labels.forEach(opt => {
+          let label = opt.parentElement;
+          label.classList.remove("correct", "incorrect");
+          if (opt.value === answers[key]) label.classList.add("correct");
+          else if (opt.checked && opt.value !== answers[key]) label.classList.add("incorrect");
+        });
+      }
     }
-    
-    public void solve(){
-        long start = System.currentTimeMillis();
-        long terminate = start + 60 * 1000;
-        int score = 0;
-        int c = 0, w = 0;
-        char ans;
-        System.out.println("\n\n----------------- STARTING THE TEST -----------------");
-        System.out.println("You have 1 Minute to answer each question. Select the options wisely... ");
-        System.out.println("Each question gives +5 marks for a correct answer and -1 mark for a wrong answer.");
-        System.out.println("All the very best.!!");
-        
-        while(System.currentTimeMillis() < terminate)
-        {
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("(Coding)-Q1. System.out.println(?; ===> Here System & out is...?");
-            System.out.println("\n" + "Options ---> ");
-            System.out.println("a. System & out both are classes\nb. System is class and out is object reference of OutputPrintStream\nc. System is class and out is object reference of PrintStream\nd. System is class and out is object reference of FilePrintStream");
-            System.out.print("\n" + "Answer: ");
-            ans = sc.next().charAt(0);
-            if(ans == 'c')
-            {
-                c += 1;
-            }
-            else
-                w += 1;
-            
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("(Coding)-Q2. Which of the following interface must contain a unique element?");
-            System.out.println("\n" + "Options ---> ");
-            System.out.println("a. Set\nb. Collection\nc. List\nd. Array");
-            System.out.print("\n" + "Answer: ");
-            ans = sc.next().charAt(0);
-            if(ans == 'a')
-            {
-                c += 1;
-            }
-            else
-                w += 1;
-            
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("(Coding)-Q3. After performing these set of operations, what does the final list look contain?\n\nInsertFront(10);\nInsertFront(20);\nInsertRear(30);\nDeleteFront();\nInsertRear(40);\nInsertRear(10);\nDeleteRear();\nInsertRear(15);\ndisplay();");
-            System.out.println("\n" + "Options ---> ");
-            System.out.println("a. 20 30 40 10\nb. 10 30 10 15\nc. 10 30 40 15\nd. 20 30 40 15");
-            System.out.print("\n" + "Answer: ");
-            ans = sc.next().charAt(0);
-            if(ans == 'c'){
-                c += 1;
-            }
-            else
-                w += 1;
-            
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("(Coding)-Q4. Find the output of the following program...\n\npublic class Solution{\n    public static void main(String[] args){\n        byte x = 127;\n        x++;\n        x++;\n        System.out.print(x);\n    }\n}");
-            System.out.println("\n" + "Options ---> ");
-            System.out.println("a. 127\nb. -127\nc. 129\nd. 2");
-            System.out.print("\n" + "Answer: ");
-            ans = sc.next().charAt(0);
-            if(ans == 'b')
-            {
-                c += 1;
-            }
-            else
-                w += 1;
-            
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("----------------------------------------------------------------------------------------");
-            System.out.println("(Aptitude)-Q5. What is the least number to be subtracted from 945 to make it a perfect square?");
-            System.out.println("\n" + "Options ---> ");
-            System.out.println("a. 45\nb. 16\nc. 30\nd. 24");
-            System.out.print("\n" + "Answer: ");
-            ans = sc.next().charAt(0);
-            if(ans == 'a') 
-            {
-                c += 1;
-            }
-            else
-                w += 1;
-            break;
-        }
-        
-        System.out.println("\n" + "Test Completed.!");
-        score = ((c * 5) - w);
-        System.out.println("Number of correct answers: " + c);
-        System.out.println("Congratulations!! Your scored " + score + " points...");
+
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      doc.setFontSize(14);
+      doc.text("Online Exam Score Report", 70, y); y += 10;
+
+      let score = parseInt(localStorage.getItem("lastScore") || 0);
+      doc.setFontSize(12);
+      doc.text(`Date: ${new Date().toLocaleString()}`, 10, y); y += 10;
+      doc.text(`Score: ${score}/6`, 10, y); y += 10;
+
+      for (let i = 1; i <= 6; i++) {
+        let q = `q${i}`;
+        let selected = document.querySelector(`input[name="${q}"]:checked`);
+        let userAnswer = selected ? selected.value.toUpperCase() : "None";
+        let correctAnswer = answers[q].toUpperCase();
+        doc.text(`Q${i}: Selected: ${userAnswer} | Correct: ${correctAnswer}`, 10, y);
+        y += 8;
+      }
+
+      doc.save("exam_report.pdf");
     }
-    
-    public static void main(String args[]){
-    	OnlineExam exam = new OnlineExam();
-        exam.login();
-    }
-}
+  </script>
+</body>
+</html>
