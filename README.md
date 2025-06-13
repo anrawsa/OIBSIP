@@ -20,14 +20,7 @@ A comprehensive Java console application designed to manage library operations e
 - Users can view books, issue one book at a time, and return books
 - Simple menu-driven interface for easy navigation
 
-### 3. ATM Interface System
-Simulates a basic ATM banking interface allowing users to:
-- Login with user credentials
-- Check account balance
-- Deposit and withdraw money
-- Change PIN and view transaction history
 
----
 
 ## Technologies Used
 - Java (Core Java, OOP concepts)
