@@ -27,6 +27,7 @@ A comprehensive Java console application designed to manage library operations e
 - Collections Framework (HashMap, ArrayList)
 - Console-based User Interface
 - Basic input validation and exception handling
+- html for user interface
 
 About Me
 I am an enthusiastic developer currently pursuing b.tech computer science and business system. This internship at Oasis InfoByte has helped me strengthen my programming skills, problem-solving ability, and understanding of software development life cycle.
