@@ -1,240 +1,156 @@
-import java.util.*;
-
-public class DigitalLibraryManagement {
-    private HashMap<String, Integer> loginto = new HashMap<>();
-    private HashMap<Integer, String> map = new HashMap<>();
-    private static String userID;
-    private static int issues = 0;
-    private Scanner sc = new Scanner(System.in);
-
-    public DigitalLibraryManagement() {
-        initializeDatabase();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Library Management</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
     }
-
-    private void initializeDatabase() {
-        map.put(1,"EE : Electric Machine-1");
-        map.put(2,"EE : Electric Machine-2");
-        map.put(3,"EE : Electric Drive");
-        map.put(4,"EE : Power System-1");
-        map.put(5,"EE : Power System-2");
-        map.put(6,"EE : Basic Electrical");
-        map.put(7,"EE : Power Electronics");
-        map.put(8,"ECE : Basic Electronics");
-        map.put(9,"ECE : Microprocessor & Microcontroller");
-        map.put(10,"ECE : Analog Electronics");
-        map.put(11,"ECE : Digital Electronics");
-        map.put(12,"CSE : C Programming");
-        map.put(13,"CSE : Java Programming");
-        map.put(14,"CSE : Artificial Intelligence");
-        map.put(15,"CSE : Object Oriented Programming (OOPs)");
-        map.put(16,"IT : Data Structures & Algorithms");
-        map.put(17,"IT : Databases - Networks");
-        map.put(18,"IT : Statistics");
-        map.put(19,"BBA : Principle of Management");
-        map.put(20,"BBA : Economics for Engineers");
-        map.put(21,"MATHS : Engineering Mathematics-1");
-        map.put(22,"MATHS : Engineering Mathematics-2");
-        map.put(23,"MATHS : Engineering Mathematics-3");
-        map.put(24,"PHYS : Physics");
-        map.put(25,"CHEM : Chemistry");
-        map.put(26,"ENG : English");
-        map.put(27,"BENG : Bengali");
-        map.put(28,"HIND : Hindi");
-        map.put(29,"EE : Control System");
-        map.put(30,"EE : Electrical Circuit Theory");
-        map.put(31,"EE : Electric & Hybrid Vehicle");
-        map.put(32,"EE : Renewable Energy Sources");
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
     }
-
-    public void homepage() {
-        while (true) {
-            System.out.println("\n--------------------------------------------------------");
-            System.out.println("----- WELCOME TO DIGITAL LIBRARY MANAGEMENT SYSTEM -----");
-            System.out.println("----------------------- HOMEPAGE -----------------------");
-            System.out.println("--------------------------------------------------------");
-            System.out.println("1. Admin Login");
-            System.out.println("2. User Login");
-            System.out.println("3. Exit");
-            System.out.print("Select Option: ");
-
-            int choice = sc.nextInt();
-            switch (choice) {
-                case 1 -> adminLogin();
-                case 2 -> userLogin();
-                case 3 -> {
-                    System.out.print("Do you want to Exit? (Y/N): ");
-                    String exit = sc.next();
-                    if (exit.equalsIgnoreCase("Y")) {
-                        System.out.println("\nExiting... Thank You!");
-                        return;
-                    }
-                }
-                default -> System.out.println("Invalid Option. Try again.");
-            }
-        }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+    h2 {
+      text-align: center;
+      color: #003366;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      margin: 0 5px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .login-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    input[type="text"], input[type="password"] {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .dashboard {
+      display: none;
+      margin-top: 20px;
+    }
+    .book-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .book-list li {
+      background: #f0f8ff;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
 
-    private void adminLogin() {
-        loginto.put("Soumya", 13579);
-        loginto.put("Soumyadip", 20026);
+  <header>
+    DIGITAL LIBRARY MANAGEMENT SYSTEM
+  </header>
 
-        System.out.print("Enter User-ID: ");
-        userID = sc.next();
-        System.out.print("Enter Password: ");
-        int pass = sc.nextInt();
+  <div class="container">
+    <h2>Login</h2>
+    <div class="login-section">
+      <input type="text" id="username" placeholder="User ID">
+      <input type="password" id="password" placeholder="Password">
+      <div class="btn-group">
+        <button onclick="login('admin')">Admin Login</button>
+        <button onclick="login('user')">User Login</button>
+      </div>
+    </div>
 
-        if (loginto.containsKey(userID) && loginto.get(userID).equals(pass)) {
-            System.out.println("\nLogin successful!");
-            adminMainPage();
+    <div class="dashboard" id="admin-dashboard">
+      <h2>Admin Dashboard</h2>
+      <div class="btn-group">
+        <button onclick="alert('Add Book function triggered')">Add Book</button>
+        <button onclick="alert('Update Book function triggered')">Update Book</button>
+        <button onclick="alert('Delete Book function triggered')">Delete Book</button>
+        <button onclick="showUserDashboard()">Switch to User</button>
+      </div>
+    </div>
+
+    <div class="dashboard" id="user-dashboard">
+      <h2>User Dashboard</h2>
+      <ul class="book-list" id="book-list">
+        <li>1 - EE: Electric Machine-1</li>
+        <li>2 - EE: Power System-1</li>
+        <li>3 - CSE: Java Programming</li>
+        <li>4 - IT: Data Structures</li>
+      </ul>
+      <div class="btn-group">
+        <button onclick="alert('Issue Book function triggered')">Issue Book</button>
+        <button onclick="alert('Return Book function triggered')">Return Book</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function login(role) {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username && password) {
+        if (role === 'admin') {
+          document.getElementById('admin-dashboard').style.display = 'block';
+          document.getElementById('user-dashboard').style.display = 'none';
         } else {
-            System.out.println("\nInvalid login. Try again.");
+          document.getElementById('user-dashboard').style.display = 'block';
+          document.getElementById('admin-dashboard').style.display = 'none';
         }
+      } else {
+        alert('Please enter both User ID and Password');
+      }
     }
 
-    private void userLogin() {
-        loginto.put("Soumya", 13579);
-        loginto.put("Soumyadip", 20026);
-        loginto.put("Soumy", 12345);
-        loginto.put("SPal", 24680);
-        loginto.put("Dip", 11111);
-
-        System.out.print("Enter User-ID: ");
-        userID = sc.next();
-        System.out.print("Enter Password: ");
-        int pass = sc.nextInt();
-
-        if (loginto.containsKey(userID) && loginto.get(userID).equals(pass)) {
-            System.out.println("\nLogin successful!");
-            userMainPage();
-        } else {
-            System.out.println("\nInvalid login. Try again.");
-        }
+    function showUserDashboard() {
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('user-dashboard').style.display = 'block';
     }
 
-    private void adminMainPage() {
-        while (true) {
-            System.out.println("\n---------------- ADMIN MAINPAGE ----------------");
-            System.out.println("1. Add New Book");
-            System.out.println("2. Update Existing Book");
-            System.out.println("3. Delete Book");
-            System.out.println("4. Go To User MainPage");
-            System.out.println("5. Logout to Homepage");
-            System.out.print("Select Option: ");
-            int option = sc.nextInt();
-
-            switch (option) {
-                case 1 -> addBook();
-                case 2 -> updateBook();
-                case 3 -> deleteBook();
-                case 4 -> userMainPage();
-                case 5 -> {
-                    System.out.println("Logging out to Homepage...");
-                    return;
-                }
-                default -> System.out.println("Invalid option. Try again.");
-            }
-        }
+    function logout() {
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('user-dashboard').style.display = 'none';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
     }
+  </script>
 
-    private void userMainPage() {
-        while (true) {
-            System.out.println("\n---------------- USER MAINPAGE ----------------");
-            System.out.println("1. View Books");
-            System.out.println("2. Issue Book");
-            System.out.println("3. Return Book");
-            System.out.println("4. Logout to Homepage");
-            System.out.print("Select Option: ");
-            int option = sc.nextInt();
-
-            switch (option) {
-                case 1 -> viewBooks();
-                case 2 -> issueBook();
-                case 3 -> returnBook();
-                case 4 -> {
-                    System.out.println("Logging out to Homepage...");
-                    return;
-                }
-                default -> System.out.println("Invalid option. Try again.");
-            }
-        }
-    }
-
-    private void addBook() {
-        System.out.print("Enter new book number: ");
-        int num = sc.nextInt();
-        sc.nextLine();
-        if (map.containsKey(num)) {
-            System.out.println("Book number already exists.");
-        } else {
-            System.out.print("Enter book details: ");
-            String details = sc.nextLine();
-            map.put(num, details);
-            System.out.println("Book added successfully.");
-        }
-    }
-
-    private void updateBook() {
-        System.out.print("Enter book number to update: ");
-        int num = sc.nextInt();
-        sc.nextLine();
-        if (map.containsKey(num)) {
-            System.out.print("Enter new details: ");
-            String details = sc.nextLine();
-            map.put(num, details);
-            System.out.println("Book updated successfully.");
-        } else {
-            System.out.println("Book not found.");
-        }
-    }
-
-    private void deleteBook() {
-        System.out.print("Enter book number to delete: ");
-        int num = sc.nextInt();
-        if (map.containsKey(num)) {
-            System.out.print("Are you sure? (Y/N): ");
-            String confirm = sc.next();
-            if (confirm.equalsIgnoreCase("Y")) {
-                map.remove(num);
-                System.out.println("Book deleted.");
-            } else {
-                System.out.println("Deletion cancelled.");
-            }
-        } else {
-            System.out.println("Book not found.");
-        }
-    }
-
-    private void viewBooks() {
-        System.out.println("\nAll Available Books:");
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + " ---> " + entry.getValue());
-        }
-    }
-
-    private void issueBook() {
-        System.out.print("Enter book number to issue: ");
-        int num = sc.nextInt();
-        if (issues == 0 && map.containsKey(num)) {
-            issues = num;
-            System.out.println("Book issued: " + map.get(num));
-        } else if (issues != 0) {
-            System.out.println("You already issued a book. Return it first.");
-        } else {
-            System.out.println("Invalid book number.");
-        }
-    }
-
-    private void returnBook() {
-        if (issues != 0 && map.containsKey(issues)) {
-            System.out.println("Returned Book: " + map.get(issues));
-            issues = 0;
-        } else {
-            System.out.println("No book to return.");
-        }
-    }
-
-    public static void main(String[] args) {
-        DigitalLibraryManagement dlm = new DigitalLibraryManagement();
-        dlm.homepage();
-    }
-}
+</body>
+</html>
